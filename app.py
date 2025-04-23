@@ -17,8 +17,8 @@ from reportlab.lib.units import inch
 from forms import RegistrationForm
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '76eff09d4c770294ea1cb26bfed1f05ab3fabfbceb23ef67'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:Admin123@localhost/online_shop'
+app.config['SECRET_KEY'] = 'Enter_your_SECRET_KEY'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://username:password@localhost/database_name'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
