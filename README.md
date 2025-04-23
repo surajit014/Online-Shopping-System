@@ -32,7 +32,7 @@ A comprehensive online shopping platform built with Flask, featuring user authen
 - Modern and responsive design
 - Intuitive navigation
 - Product categorization
-- Search functionality
+
 
 ## Technology Stack
 
@@ -133,4 +133,4 @@ online-shop/
 4. **Order Management**
    - View purchase history
    - Download bills
-   - Track order status
+     
