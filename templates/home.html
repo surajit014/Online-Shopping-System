@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Online Shop{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="jumbotron text-center">
+            <h1 class="display-4">Welcome to Online Shop</h1>
+            <p class="lead">Discover amazing brands and products at great prices!</p>
+            <hr class="my-4" style="border-color: rgba(255,255,255,0.3);">
+            <p class="mb-4">Shop the latest trends from top brands and get the best deals on premium products.</p>
+            {% if not current_user.is_authenticated %}
+                <a class="btn btn-light btn-lg me-2" href="{{ url_for('register') }}" role="button">
+                    <i class="fas fa-user-plus me-2"></i>Register Now
+                </a>
+                <a class="btn btn-outline-light btn-lg" href="{{ url_for('login') }}" role="button">
+                    <i class="fas fa-sign-in-alt me-2"></i>Login
+                </a>
+            {% else %}
+                <a class="btn btn-light btn-lg me-2" href="{{ url_for('purchase_history') }}" role="button">
+                    <i class="fas fa-history me-2"></i>Purchase History
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="text-center mb-4">Featured Brands</h2>
+    </div>
+</div>
+
+<div class="row">
+    {% for brand in brands %}
+    <div class="col-md-4 mb-4">
+        <div class="card brand-card h-100">
+            <div class="position-relative">
+                <img src="{{ brand.logo_url or 'https://via.placeholder.com/300' }}" class="card-img-top" alt="{{ brand.name }}">
+            </div>
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ brand.name }}</h5>
+                <p class="card-text flex-grow-1">{{ brand.description[:100] }}...</p>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <span class="text-primary">₹{{ brand.min_price }} - ₹{{ brand.max_price }}</span>
+                    <a href="{{ url_for('brand_products', brand_id=brand.id) }}" class="btn btn-primary">
+                        <i class="fas fa-eye me-1"></i>View Products
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4 mb-4">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-truck fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Free Shipping</h5>
+                <p class="card-text">On orders over ₹5000</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-undo fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Easy Returns</h5>
+                <p class="card-text">7-day return policy</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-lock fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Secure Payment</h5>
+                <p class="card-text">100% secure checkout</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

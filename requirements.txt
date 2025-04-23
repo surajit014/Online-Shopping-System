@@ -1,0 +1,14 @@
+Flask
+Flask-SQLAlchemy
+Flask-Login
+Flask-WTF
+mysql-connector-python
+mysqlclient
+python-dotenv
+Werkzeug
+Pillow
+reportlab
+protobuf
+wheel
+ml-dtypes
+tensorboard 

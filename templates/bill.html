@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Bill</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .order-info {
+            margin-bottom: 20px;
+        }
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .items-table th, .items-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .items-table th {
+            background-color: #f2f2f2;
+        }
+        .total {
+            text-align: right;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .product-image {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
+        .action-buttons {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .action-buttons button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        .action-buttons button:hover {
+            background-color: #45a049;
+        }
+        @media print {
+            .action-buttons {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="action-buttons">
+        <button onclick="window.print()">Print Bill</button>
+        <button onclick="saveAsPDF()">Save as PDF</button>
+    </div>
+
+    <div class="header">
+        <h1>Order Bill</h1>
+    </div>
+
+    <div class="order-info">
+        <p><strong>Order ID:</strong> {{ order.id }}</p>
+        <p><strong>Date:</strong> {{ order.order_date.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+        <p><strong>Customer:</strong> {{ order.customer.username }}</p>
+        <p><strong>Mobile:</strong> {{ order.customer.phone }}</p>
+        <p><strong>Payment Method:</strong> {{ 'Cash on Delivery' if order.status == 'Pending' else 'Online Payment' }}</p>
+        <p><strong>Status:</strong> {{ order.status }}</p>
+    </div>
+
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Image</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td><img src="{{ item.product.image_url }}" class="product-image" alt="{{ item.product.name }}"></td>
+                <td>{{ item.quantity }}</td>
+                <td>₹{{ item.price }}</td>
+                <td>₹{{ item.price * item.quantity }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="total">
+        <p>Total Amount: ₹{{ order.total_amount }}</p>
+    </div>
+
+    <div class="footer">
+        <p>Payment Successfull ✅</p>
+        <p>X  Don't return any product without box and with any damage & also carry the receipt.</p>
+        <p>Thank you for shopping with us! 🤝</p>
+    </div>
+
+    <script>
+        function saveAsPDF() {
+            window.location.href = "{{ url_for('download_bill', order_id=order.id) }}";
+        }
+    </script>
+</body>
+</html> 

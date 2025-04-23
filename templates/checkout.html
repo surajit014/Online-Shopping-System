@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout - Online Shop{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Checkout</h1>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in products %}
+                            <tr>
+                                <td>{{ item.product.name }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>₹{{ item.product.price }}</td>
+                                <td>₹{{ item.subtotal }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                <td><strong>₹{{ total }}</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Payment Information</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" id="paymentForm">
+                        <div class="mb-3">
+                            <label for="payment_method" class="form-label">Payment Method</label>
+                            <select class="form-select" id="payment_method" name="payment_method" required>
+                                <option value="">Select payment method</option>
+                                <option value="cash_on_delivery">Cash on Delivery</option>
+                                <option value="credit_card">Credit Card</option>
+                                <option value="debit_card">Debit Card</option>
+                                <option value="upi">UPI</option>
+                                <option value="net_banking">Net Banking</option>
+                            </select>
+                        </div>
+                        
+                        <div id="cash_on_delivery_info" style="display: none;" class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Pay in cash when your order is delivered.
+                        </div>
+                        
+                        <div id="credit_card_fields" style="display: none;">
+                            <div class="mb-3">
+                                <label for="card_number" class="form-label">Card Number</label>
+                                <input type="text" class="form-control" id="card_number" name="card_number">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="expiry_date" class="form-label">Expiry Date</label>
+                                        <input type="text" class="form-control" id="expiry_date" name="expiry_date" placeholder="MM/YY">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="cvv" class="form-label">CVV</label>
+                                        <input type="text" class="form-control" id="cvv" name="cvv">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="upi_fields" style="display: none;">
+                            <div class="mb-3">
+                                <label for="upi_id" class="form-label">UPI ID</label>
+                                <input type="text" class="form-control" id="upi_id" name="upi_id">
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary" id="completePurchaseBtn">
+                                Complete Purchase
+                            </button>
+                            <button type="button" class="btn btn-success" id="generateBillBtn" style="display: none;">
+                                Generate Bill
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('payment_method').addEventListener('change', function() {
+    const creditCardFields = document.getElementById('credit_card_fields');
+    const upiFields = document.getElementById('upi_fields');
+    const cashOnDeliveryInfo = document.getElementById('cash_on_delivery_info');
+    const completePurchaseBtn = document.getElementById('completePurchaseBtn');
+    const generateBillBtn = document.getElementById('generateBillBtn');
+    
+    // Hide all fields first
+    creditCardFields.style.display = 'none';
+    upiFields.style.display = 'none';
+    cashOnDeliveryInfo.style.display = 'none';
+    generateBillBtn.style.display = 'none';
+    
+    if (this.value === 'credit_card' || this.value === 'debit_card') {
+        creditCardFields.style.display = 'block';
+    } else if (this.value === 'upi') {
+        upiFields.style.display = 'block';
+    } else if (this.value === 'cash_on_delivery') {
+        cashOnDeliveryInfo.style.display = 'block';
+    }
+});
+
+document.getElementById('completePurchaseBtn').addEventListener('click', function(e) {
+    const paymentMethod = document.getElementById('payment_method').value;
+    if (paymentMethod === 'cash_on_delivery') {
+        e.preventDefault();
+        this.style.display = 'none';
+        document.getElementById('generateBillBtn').style.display = 'block';
+    }
+});
+
+document.getElementById('generateBillBtn').addEventListener('click', function() {
+    document.getElementById('paymentForm').submit();
+});
+</script>
+{% endblock %} 

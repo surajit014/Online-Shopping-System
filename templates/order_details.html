@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Order Details</h2>
+    <div class="card mb-4">
+        <div class="card-header">
+            Order #{{ order.id }}
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Order Information</h5>
+            <p><strong>Date:</strong> {{ order.order_date.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            <p><strong>Status:</strong> {{ order.status }}</p>
+            <p><strong>Total Amount:</strong> ₹{{ order.total_amount }}</p>
+            
+            <h5 class="mt-4">Order Items</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>₹{{ item.price }}</td>
+                        <td>₹{{ item.price * item.quantity }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if not order.feedback %}
+    <div class="card">
+        <div class="card-header">
+            Give Feedback
+        </div>
+        <div class="card-body">
+            <form action="{{ url_for('submit_feedback', order_id=order.id) }}" method="POST">
+                <div class="mb-3">
+                    <label for="rating" class="form-label">Rating</label>
+                    <div class="rating">
+                        {% for i in range(5, 0, -1) %}
+                        <input type="radio" name="rating" id="star{{ i }}" value="{{ i }}" required>
+                        <label for="star{{ i }}">★</label>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="comment" class="form-label">Comment</label>
+                    <textarea class="form-control" id="comment" name="comment" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Feedback</button>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <div class="card">
+        <div class="card-header">
+            Your Feedback
+        </div>
+        <div class="card-body">
+            <div class="rating">
+                {% for i in range(5, 0, -1) %}
+                <span class="{% if i <= order.feedback.rating %}text-warning{% else %}text-muted{% endif %}">★</span>
+                {% endfor %}
+            </div>
+            <p class="mt-2">{{ order.feedback.comment }}</p>
+            <p class="text-muted">Submitted on {{ order.feedback.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+
+.rating input {
+    display: none;
+}
+
+.rating label {
+    font-size: 2em;
+    color: #ddd;
+    cursor: pointer;
+}
+
+.rating label:hover,
+.rating label:hover ~ label,
+.rating input:checked ~ label {
+    color: #ffd700;
+}
+
+.text-warning {
+    color: #ffd700;
+}
+</style>
+{% endblock %} 
